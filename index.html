@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>[YOUR_NAME] — Full-Stack Developer</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind config BEFORE cdn script -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+          animation: { blink: 'blink 1s step-end infinite' },
+          keyframes: { blink: { '0%,100%': { opacity: '1' }, '50%': { opacity: '0' } } },
+        }
+      }
+    }
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #0f172a; }
+    ::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #60a5fa; }
+
+    /* Typing cursor */
+    #typing-cursor {
+      display: inline-block;
+      width: 3px;
+      height: 1em;
+      background: #3b82f6;
+      margin-left: 2px;
+      vertical-align: middle;
+      animation: blink 1s step-end infinite;
+    }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+    /* Scroll reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Hero radial gradient bg */
+    #hero {
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 0%, rgba(59,130,246,0.18) 0%, transparent 70%),
+        #0f172a;
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      .reveal { opacity: 1; transform: none; transition: none; }
+      #typing-cursor { animation: none; }
+    }
+
+    /* Active nav link */
+    .nav-link.active {
+      color: #60a5fa;
+    }
+    .nav-link.active::after {
+      width: 100%;
+    }
+
+    /* Nav underline indicator */
+    .nav-link {
+      position: relative;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(to right, #3b82f6, #a855f7);
+      border-radius: 1px;
+      transition: width 0.25s ease;
+    }
+    .nav-link:hover::after { width: 100%; }
+
+    /* Card hover */
+    .project-card {
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+    .project-card:hover {
+      transform: translateY(-6px);
+    }
+    .project-card.blue:hover  { box-shadow: 0 20px 40px rgba(59,130,246,0.25); }
+    .project-card.purple:hover { box-shadow: 0 20px 40px rgba(168,85,247,0.25); }
+    .project-card.green:hover  { box-shadow: 0 20px 40px rgba(16,185,129,0.25); }
+
+    /* Card top accent bar */
+    .card-accent {
+      height: 3px;
+      border-radius: 9999px 9999px 0 0;
+      margin: -1.5rem -1.5rem 1.25rem;
+    }
+    .card-accent.blue   { background: linear-gradient(to right, #3b82f6, #6366f1); }
+    .card-accent.purple { background: linear-gradient(to right, #a855f7, #ec4899); }
+    .card-accent.green  { background: linear-gradient(to right, #10b981, #06b6d4); }
+
+    /* Skill badge hover */
+    .skill-badge {
+      transition: background 0.2s, color 0.2s, transform 0.15s;
+    }
+    .skill-badge:hover {
+      background: #3b82f6;
+      color: #fff;
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+
+<body class="bg-slate-900 text-slate-100 font-sans antialiased">
+
+  <!-- ===================== NAVIGATION ===================== -->
+  <nav id="navbar" class="fixed top-0 inset-x-0 z-50 transition-all duration-300">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        <!-- Logo -->
+        <a href="#hero" class="text-2xl font-extrabold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent tracking-tight">
+          [YOUR_NAME]
+        </a>
+
+        <!-- Desktop links -->
+        <div class="hidden md:flex items-center gap-8">
+          <a href="#about"    class="nav-link text-slate-300 hover:text-slate-100 text-base font-medium transition-colors pb-1" data-section="about">About</a>
+          <a href="#skills"   class="nav-link text-slate-300 hover:text-slate-100 text-base font-medium transition-colors pb-1" data-section="skills">Skills</a>
+          <a href="#projects" class="nav-link text-slate-300 hover:text-slate-100 text-base font-medium transition-colors pb-1" data-section="projects">Projects</a>
+          <a href="#contact"  class="nav-link px-5 py-2 rounded-full border border-blue-500/50 text-blue-400 hover:bg-blue-500 hover:text-white text-base font-medium transition-all" data-section="contact">Contact</a>
+        </div>
+
+        <!-- Hamburger -->
+        <button id="menu-btn" class="md:hidden p-2 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-slate-800 transition-colors" aria-label="Toggle menu">
+          <!-- Hamburger icon -->
+          <svg id="icon-hamburger" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+          <!-- X icon -->
+          <svg id="icon-close" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile menu -->
+    <div id="mobile-menu" class="md:hidden hidden border-t border-slate-800 bg-slate-900/95 backdrop-blur-md">
+      <div class="px-4 py-4 flex flex-col gap-4">
+        <a href="#about"    class="nav-link text-slate-400 hover:text-slate-100 text-sm font-medium transition-colors" data-section="about">About</a>
+        <a href="#skills"   class="nav-link text-slate-400 hover:text-slate-100 text-sm font-medium transition-colors" data-section="skills">Skills</a>
+        <a href="#projects" class="nav-link text-slate-400 hover:text-slate-100 text-sm font-medium transition-colors" data-section="projects">Projects</a>
+        <a href="#contact"  class="nav-link self-start px-4 py-1.5 rounded-full border border-blue-500/50 text-blue-400 hover:bg-blue-500 hover:text-white text-sm font-medium transition-all" data-section="contact">Contact</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ===================== HERO ===================== -->
+  <section id="hero" class="relative min-h-screen flex flex-col items-center justify-center text-center px-4">
+    <div class="max-w-3xl mx-auto">
+      <p class="text-blue-400 font-medium tracking-widest uppercase text-sm mb-4">Hello, world 👋</p>
+
+      <h1 class="text-4xl sm:text-6xl lg:text-7xl font-extrabold mb-4">
+        <span id="typed-name"></span><span id="typing-cursor"></span>
+      </h1>
+
+      <p class="text-slate-400 text-lg sm:text-2xl font-light mb-8">
+        Full-Stack Developer &amp;
+        <span class="bg-gradient-to-r from-blue-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent font-medium">Problem Solver</span>
+      </p>
+
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="#projects"
+           class="px-8 py-3 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold hover:opacity-90 transition-opacity shadow-lg shadow-blue-500/30">
+          View Projects
+        </a>
+        <a href="#contact"
+           class="px-8 py-3 rounded-full border border-slate-600 text-slate-300 font-semibold hover:border-blue-400 hover:text-blue-400 transition-colors">
+          Contact Me
+        </a>
+      </div>
+    </div>
+
+    <!-- Scroll chevron -->
+    <a href="#about" class="absolute bottom-10 left-1/2 -translate-x-1/2 text-slate-500 hover:text-blue-400 transition-colors animate-bounce" aria-label="Scroll down">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+      </svg>
+    </a>
+  </section>
+
+  <!-- ===================== ABOUT ===================== -->
+  <section id="about" class="py-24 px-4 bg-slate-800/40">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="reveal text-3xl sm:text-4xl font-bold text-center mb-16">
+        About <span class="bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">Me</span>
+      </h2>
+
+      <div class="reveal flex flex-col md:flex-row items-center gap-12">
+        <!-- Avatar -->
+        <div class="flex-shrink-0">
+          <div class="relative w-40 h-40 rounded-full ring-4 ring-blue-500/40 overflow-hidden">
+            <img
+              src="assets/avatar.jpg"
+              alt="Avatar"
+              class="w-full h-full object-cover"
+              onerror="this.style.display='none'; document.getElementById('avatar-fallback').style.display='flex';"
+            />
+            <div id="avatar-fallback"
+                 class="hidden absolute inset-0 items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600 text-white text-4xl font-bold select-none">
+              YN
+            </div>
+          </div>
+        </div>
+
+        <!-- Bio -->
+        <div class="text-slate-300 leading-relaxed space-y-4 text-lg">
+          <p>[INTRO_LINE_1]</p>
+          <p>[INTRO_LINE_2]</p>
+          <p class="text-slate-400 text-base">
+            When I'm not coding, you'll find me exploring new technologies, contributing to open source, or enjoying a good cup of coffee. ☕
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== SKILLS ===================== -->
+  <section id="skills" class="py-24 px-4 bg-slate-800/50">
+    <div class="max-w-5xl mx-auto">
+      <h2 class="reveal text-3xl sm:text-4xl font-bold text-center mb-16">
+        Tech <span class="bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">Stack</span>
+      </h2>
+
+      <div class="grid md:grid-cols-3 gap-8">
+        <!-- Frontend -->
+        <div class="reveal bg-slate-800 rounded-2xl p-6 border border-slate-700">
+          <div class="flex items-center gap-3 mb-5">
+            <div class="w-10 h-10 rounded-xl bg-blue-500/20 flex items-center justify-center text-xl">🎨</div>
+            <h3 class="font-semibold text-lg">Frontend</h3>
+          </div>
+          <div class="flex flex-wrap gap-2" id="skills-frontend"></div>
+        </div>
+
+        <!-- Backend -->
+        <div class="reveal bg-slate-800 rounded-2xl p-6 border border-slate-700">
+          <div class="flex items-center gap-3 mb-5">
+            <div class="w-10 h-10 rounded-xl bg-purple-500/20 flex items-center justify-center text-xl">⚙️</div>
+            <h3 class="font-semibold text-lg">Backend</h3>
+          </div>
+          <div class="flex flex-wrap gap-2" id="skills-backend"></div>
+        </div>
+
+        <!-- Tools -->
+        <div class="reveal bg-slate-800 rounded-2xl p-6 border border-slate-700">
+          <div class="flex items-center gap-3 mb-5">
+            <div class="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center text-xl">🛠️</div>
+            <h3 class="font-semibold text-lg">Tools &amp; DevOps</h3>
+          </div>
+          <div class="flex flex-wrap gap-2" id="skills-tools"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== PROJECTS ===================== -->
+  <section id="projects" class="py-24 px-4">
+    <div class="max-w-6xl mx-auto">
+      <h2 class="reveal text-3xl sm:text-4xl font-bold text-center mb-16">
+        Featured <span class="bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">Projects</span>
+      </h2>
+
+      <div id="projects-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    </div>
+  </section>
+
+  <!-- ===================== CONTACT ===================== -->
+  <section id="contact" class="py-24 px-4 bg-slate-800/50">
+    <div class="max-w-2xl mx-auto text-center">
+      <h2 class="reveal text-3xl sm:text-4xl font-bold mb-6">
+        Get In <span class="bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">Touch</span>
+      </h2>
+      <p class="reveal text-slate-400 text-lg mb-10">
+        I'm always open to new opportunities and interesting projects.<br class="hidden sm:block"/>
+        Feel free to reach out!
+      </p>
+
+      <div class="reveal flex flex-col sm:flex-row gap-8 justify-center">
+        <a href="mailto:[EMAIL]"
+           class="inline-flex items-center gap-2 px-8 py-3 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold hover:opacity-90 transition-opacity shadow-lg shadow-blue-500/30">
+          <!-- Mail icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+          </svg>
+          Send Email
+        </a>
+
+        <a href="https://github.com/[GITHUB]" target="_blank" rel="noopener noreferrer"
+           class="inline-flex items-center gap-2 px-8 py-3 rounded-full border border-slate-600 text-slate-300 font-semibold hover:border-blue-400 hover:text-blue-400 transition-colors">
+          <!-- GitHub icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.757-1.333-1.757-1.089-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
+          </svg>
+          GitHub Profile
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="py-8 px-4 border-t border-slate-800 text-center">
+    <p class="text-slate-500 text-sm">
+      &copy; <span id="footer-year"></span> [YOUR_NAME]. Built with ❤️ and Tailwind CSS.
+    </p>
+  </footer>
+
+  <!-- ===================== SCRIPTS ===================== -->
+  <script>
+    /* ── Data ─────────────────────────────────────────── */
+
+    const SKILLS = {
+      frontend: ['HTML5', 'CSS3', 'JavaScript', 'TypeScript', 'React', 'Next.js', 'Tailwind CSS', 'Vue.js'],
+      backend:  ['Node.js', 'Express', 'Python', 'FastAPI', 'PostgreSQL', 'MongoDB', 'Redis', 'REST API'],
+      tools:    ['Git', 'Docker', 'GitHub Actions', 'AWS', 'Vercel', 'Linux', 'Figma', 'VS Code'],
+    };
+
+    const PROJECTS = [
+      {
+        title: 'E-Commerce Platform',
+        description: 'A full-stack e-commerce solution with real-time inventory, payment integration, and admin dashboard.',
+        tags: ['Next.js', 'Node.js', 'PostgreSQL', 'Stripe'],
+        github: 'https://github.com/[GITHUB]/ecommerce-platform',
+        live: '#',
+        color: 'blue',
+        icon: '🛒',
+      },
+      {
+        title: 'Task Management App',
+        description: 'Collaborative task board with drag-and-drop, real-time updates via WebSocket, and team workspaces.',
+        tags: ['React', 'Express', 'Socket.io', 'MongoDB'],
+        github: 'https://github.com/[GITHUB]/task-manager',
+        live: '#',
+        color: 'purple',
+        icon: '✅',
+      },
+      {
+        title: 'AI Chat Assistant',
+        description: 'Conversational AI interface powered by a large language model with streaming responses and conversation history.',
+        tags: ['Python', 'FastAPI', 'React', 'OpenAI'],
+        github: 'https://github.com/[GITHUB]/ai-chat',
+        live: '#',
+        color: 'green',
+        icon: '🤖',
+      },
+    ];
+
+    /* ── Footer year ──────────────────────────────────── */
+    document.getElementById('footer-year').textContent = new Date().getFullYear();
+
+    /* ── Render Skills ────────────────────────────────── */
+    function renderSkills(containerId, items) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = items.map(skill =>
+        `<span class="skill-badge px-3 py-1 rounded-full text-sm font-medium bg-slate-700 text-slate-300 cursor-default">${skill}</span>`
+      ).join('');
+    }
+    renderSkills('skills-frontend', SKILLS.frontend);
+    renderSkills('skills-backend',  SKILLS.backend);
+    renderSkills('skills-tools',    SKILLS.tools);
+
+    /* ── Render Projects ──────────────────────────────── */
+    const COLOR_MAP = {
+      blue:   { tag: 'bg-blue-500/20 text-blue-300',   btn: 'bg-blue-500/20 text-blue-300 hover:bg-blue-500 hover:text-white',   border: 'hover:border-blue-400 hover:text-blue-400' },
+      purple: { tag: 'bg-purple-500/20 text-purple-300', btn: 'bg-purple-500/20 text-purple-300 hover:bg-purple-500 hover:text-white', border: 'hover:border-purple-400 hover:text-purple-400' },
+      green:  { tag: 'bg-emerald-500/20 text-emerald-300', btn: 'bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500 hover:text-white', border: 'hover:border-emerald-400 hover:text-emerald-400' },
+    };
+
+    const projectsGrid = document.getElementById('projects-grid');
+    projectsGrid.innerHTML = PROJECTS.map(p => {
+      const c = COLOR_MAP[p.color];
+      return `
+      <div class="reveal project-card ${p.color} bg-slate-800 rounded-2xl pt-0 px-6 pb-6 border border-slate-700 flex flex-col overflow-hidden">
+        <div class="card-accent ${p.color}"></div>
+        <div class="flex items-center gap-3 mb-3">
+          <span class="text-2xl">${p.icon}</span>
+          <h3 class="text-lg font-semibold">${p.title}</h3>
+        </div>
+        <p class="text-slate-400 text-sm leading-relaxed mb-4">${p.description}</p>
+        <div class="flex flex-wrap gap-2 mb-6">
+          ${p.tags.map(t => `<span class="px-2 py-0.5 rounded text-xs font-medium ${c.tag}">${t}</span>`).join('')}
+        </div>
+        <div class="flex gap-3 mt-auto">
+          <a href="${p.github}" target="_blank" rel="noopener noreferrer"
+             class="flex-1 text-center py-2 rounded-lg border border-slate-600 text-slate-300 text-sm font-medium ${c.border} transition-colors">
+            GitHub
+          </a>
+          <a href="${p.live}" target="_blank" rel="noopener noreferrer"
+             class="flex-1 text-center py-2 rounded-lg text-sm font-medium transition-colors ${c.btn}">
+            Live Demo
+          </a>
+        </div>
+      </div>
+    `}).join('');
+
+    /* ── Mobile menu toggle ───────────────────────────── */
+    const menuBtn        = document.getElementById('menu-btn');
+    const mobileMenu     = document.getElementById('mobile-menu');
+    const iconHamburger  = document.getElementById('icon-hamburger');
+    const iconClose      = document.getElementById('icon-close');
+
+    menuBtn.addEventListener('click', () => {
+      const isOpen = !mobileMenu.classList.contains('hidden');
+      mobileMenu.classList.toggle('hidden', isOpen);
+      iconHamburger.classList.toggle('hidden', !isOpen);
+      iconClose.classList.toggle('hidden', isOpen);
+    });
+
+    // Close mobile menu on link click
+    mobileMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.add('hidden');
+        iconHamburger.classList.remove('hidden');
+        iconClose.classList.add('hidden');
+      });
+    });
+
+    /* ── Navbar scroll effect ─────────────────────────── */
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 20) {
+        navbar.classList.add('bg-slate-900/80', 'backdrop-blur-md', 'border-b', 'border-slate-800');
+      } else {
+        navbar.classList.remove('bg-slate-900/80', 'backdrop-blur-md', 'border-b', 'border-slate-800');
+      }
+    }, { passive: true });
+
+    /* ── Scroll spy ───────────────────────────────────── */
+    const sections  = document.querySelectorAll('section[id]');
+    const navLinks  = document.querySelectorAll('.nav-link[data-section]');
+
+    const spyObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          navLinks.forEach(link => {
+            link.classList.toggle('active', link.dataset.section === entry.target.id);
+          });
+        }
+      });
+    }, { rootMargin: '-40% 0px -55% 0px' });
+
+    sections.forEach(s => spyObserver.observe(s));
+
+    /* ── Scroll reveal animation ──────────────────────── */
+    const revealObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+    /* ── Typing animation ─────────────────────────────── */
+    const NAME        = '[YOUR_NAME]';
+    const typedEl     = document.getElementById('typed-name');
+    let   charIndex   = 0;
+
+    function typeChar() {
+      if (charIndex < NAME.length) {
+        typedEl.textContent += NAME[charIndex];
+        charIndex++;
+      } else {
+        clearInterval(typingTimer);
+      }
+    }
+
+    const typingTimer = setInterval(typeChar, 100);
+
+    /* ── Smooth scroll with navbar offset ────────────── */
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', e => {
+        const href = anchor.getAttribute('href');
+        if (href === '#') return;
+        const target = document.querySelector(href);
+        if (!target) return;
+        e.preventDefault();
+        const navHeight = navbar.offsetHeight;
+        const top = target.getBoundingClientRect().top + window.scrollY - navHeight;
+        window.scrollTo({ top, behavior: 'smooth' });
+      });
+    });
+  </script>
+</body>
+</html>
